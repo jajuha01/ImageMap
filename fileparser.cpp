@@ -127,7 +127,7 @@ void FileParser::GetGPSData()
         if(src.getMetadata(FIMD_EXIF_EXIF,"DateTimeOriginal",tag))
         {
             value = tag.toString(FIMD_EXIF_EXIF);
-            image.time_stamp = new QString(value);
+            image.time_stamp = QString(value);
         }
 
         /* Make Thumbnail from original image and store it to execution folder using PNG Format */

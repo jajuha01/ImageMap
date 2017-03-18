@@ -8,24 +8,10 @@
 
 ImageData::ImageData()
 {
-    latitude = NULL;
-    longitude = NULL;
-    file_name = NULL;
-    thumbnail_path = NULL;
-    full_path = NULL;
-    time_stamp = NULL;
-    alttitude = NULL;
 }
 
 ImageData::~ImageData()
 {
-    delete latitude;
-    delete longitude;
-    delete file_name;
-    delete thumbnail_path;
-    delete full_path;
-    delete time_stamp;
-    delete alttitude;
 }
 
 void ImageData::AddGoordinate(bool longitudeValue, const char *goordinate, const char goordinateRef)
@@ -36,7 +22,7 @@ void ImageData::AddGoordinate(bool longitudeValue, const char *goordinate, const
     double seconds           = 0;
     double seconds2          = 0;
     double decimal_value     = 0;
-    QString* tmp_str;
+    QString tmp_str;
     std::ostringstream o;
 
     /* Format is FreeImage Library specific change only in case library changes
@@ -107,7 +93,7 @@ void ImageData::AddGoordinate(bool longitudeValue, const char *goordinate, const
     }
     o.precision(12);
     o << decimal_value;
-    tmp_str = new QString(o.str().c_str());
+    tmp_str = QString(o.str().c_str());
     if (longitudeValue)
     {
         longitude = tmp_str;
@@ -125,7 +111,7 @@ void ImageData::AddGoordinate(bool longitudeValue, const char *goordinate, const
 void ImageData::AddFileName(QString string)
 {
     QFileInfo fileInfo(string);
-    file_name = new QString(fileInfo.fileName());
+    file_name = QString(fileInfo.fileName());
 }
 
 void ImageData::AddThumbnail(QImage image)
@@ -141,7 +127,8 @@ void ImageData::AddAlttitude(const char *value)
     int index = 0;  // Calculate decimal values
     int index2 = 0; // Calculate divider size
     int place_of_dot;
-    char* tmp_data;
+    char tmp_data[256] = {0};
+
     while (value[index] != '/')
         index++;
     while (value[(index+index2)] != '\0')
@@ -166,7 +153,7 @@ void ImageData::AddAlttitude(const char *value)
     if (reverseFormat)
     {
         /* create string in reverse format */
-        tmp_data = strdup(value);
+        strcpy(tmp_data,value);
         i = 1;
         // copy real values
         while (i < index2)
@@ -197,7 +184,7 @@ void ImageData::AddAlttitude(const char *value)
     else
 #endif
     {
-        tmp_data = strdup(value);
+        strcpy(tmp_data,value);
     }
     /* Create new string in decimal format */
     if (index > (index2-2))
@@ -222,14 +209,13 @@ void ImageData::AddAlttitude(const char *value)
         tmp_data[index+1] = '\0';
     }
 
-    alttitude = new QString(tmp_data);
-    delete tmp_data;
+    alttitude = QString(tmp_data);
 }
 
 void ImageData::ChangeFileNameExtension(const char* new_ext)
 {
-    int extension_index = file_name->lastIndexOf('.');
-    int cut_amount = file_name->length()-extension_index;
-    file_name->insert(extension_index,new_ext);
-    file_name->chop(cut_amount);
+    int extension_index = file_name.lastIndexOf('.');
+    int cut_amount = file_name.length()-extension_index;
+    file_name.insert(extension_index,new_ext);
+    file_name.chop(cut_amount);
 }

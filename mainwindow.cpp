@@ -54,17 +54,17 @@ void MainWindow::AddNewMarker(const ImageData& data)
     QStringList code;
     QString OneLine = "";
 
-    if (data.longitude && data.latitude)
+    if (data.longitude.size() && data.latitude.size())
     {
         code << "{";
-        OneLine = "var description = '" + *(data.file_name);
-        if (data.alttitude)
-            OneLine += " Height: " + *(data.alttitude);
-        if (data.time_stamp)
-            OneLine += " Timestamp:" + *(data.time_stamp);
+        OneLine = "var description = '" + data.file_name;
+        if (data.alttitude.size())
+            OneLine += " Height: " + data.alttitude;
+        if (data.time_stamp.size())
+            OneLine += " Timestamp:" + data.time_stamp;
         OneLine += "';";
         code << OneLine;
-        OneLine = "var myLatlng = new google.maps.LatLng(" + *(data.latitude) + ", " + *(data.longitude) + ");";
+        OneLine = "var myLatlng = new google.maps.LatLng(" + data.latitude + ", " + data.longitude + ");";
         code << OneLine;
         code << "addMarker(myLatlng, description);";
         code << "}";

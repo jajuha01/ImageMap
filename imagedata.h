@@ -13,13 +13,13 @@ public:
     void AddThumbnail(QImage image);
     void AddAlttitude(const char* value);
     void ChangeFileNameExtension(const char* new_ext);
-    QString* alttitude;
-    QString* time_stamp;
-    QString* latitude;
-    QString* longitude;
-    QString* file_name;
-    QString* full_path;
-    QString* thumbnail_path;
+    QString alttitude;
+    QString time_stamp;
+    QString latitude;
+    QString longitude;
+    QString file_name;
+    QString full_path;
+    QString thumbnail_path;
 private:
 };
 
