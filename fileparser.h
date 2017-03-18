@@ -17,7 +17,7 @@ public:
     ~FileParser();
     FileParser(QString start_path);
     void FindFilesWithExtension(QString ext);
-    ImageData *GetImageData(int index);
+    const ImageData& GetImageData(int index);
 private:
     void FindFilesFromDir(QDir dir);
     void GetGPSData();
@@ -27,7 +27,7 @@ private:
     QString extension;
     QStringList listOfFiles;
     QThread* thread;
-    QList <ImageData*> ImageTable;
+    QList <ImageData> ImageTable;
 public slots:
     void SearchFiles();
     void Complete();

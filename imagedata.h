@@ -3,9 +3,8 @@
 
 #include <QImage>
 
-class ImageData : QObject
+class ImageData
 {
-  Q_OBJECT
 public:
     ImageData();
     ~ImageData();

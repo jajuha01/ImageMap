@@ -15,12 +15,6 @@ FileParser::FileParser()
 
 FileParser::~FileParser()
 {
-    while (ImageTable.size())
-    {
-        delete ImageTable.at(0);
-        ImageTable.removeAt(0);
-    }
-    listOfFiles.clear();
     disconnect(thread,SIGNAL(started()),this,SLOT(SearchFiles()));
     disconnect(thread,SIGNAL(finished()),this,SLOT(Complete()));
     delete thread;
@@ -46,9 +40,9 @@ void FileParser::FindFilesWithExtension(QString ext)
     }
 }
 
-ImageData* FileParser::GetImageData(int index)
+const ImageData& FileParser::GetImageData(int index)
 {
-    return ImageTable.value(index);
+    return ImageTable.at(index);
 }
 
 void FileParser::SearchFiles()
@@ -77,7 +71,6 @@ QString FileParser::GetFileByIndex(int index)
 void FileParser::FindFilesFromDir(QDir dir)
 {
    QDirIterator iterator(dir.absolutePath(), QDirIterator::Subdirectories);
-   int index = 0;
    QString tmpString = extension;
    while (iterator.hasNext()) {
       iterator.next();
@@ -103,38 +96,38 @@ void FileParser::GetGPSData()
     char value2 = '\n';
     int amount = this->FileAmount();
     int index = 0;
-    ImageData* image;
+    ImageData image;
+    ImageTable.reserve(amount);
 
     while (index < amount)
     {
         file = this->GetFileByIndex(index);
         src.load(file.toStdString().c_str());
 
-        image = new ImageData();
-        image->AddFileName(file);
+        image.AddFileName(file);
 
         if(src.getMetadata(FIMD_EXIF_GPS,"GPSLatitude",tag) && src.getMetadata(FIMD_EXIF_GPS,"GPSLatitudeRef",tag2))
         {
             value2 = *(tag2.toString(FIMD_EXIF_GPS));
             value = tag.toString(FIMD_EXIF_GPS);
-            image->AddGoordinate(false,value,value2);
+            image.AddGoordinate(false,value,value2);
         }
         if(src.getMetadata(FIMD_EXIF_GPS,"GPSLongitude",tag) && src.getMetadata(FIMD_EXIF_GPS,"GPSLongitudeRef",tag2))
         {
             value2 = *(tag2.toString(FIMD_EXIF_GPS));
             value = tag.toString(FIMD_EXIF_GPS);
-            image->AddGoordinate(true,value,value2);
+            image.AddGoordinate(true,value,value2);
         }
         if(src.getMetadata(FIMD_EXIF_GPS,"GPSAltitude",tag))
         {
             value = tag.toString(FIMD_EXIF_GPS);
-            image->AddAlttitude(value);
+            image.AddAlttitude(value);
         }
 
         if(src.getMetadata(FIMD_EXIF_EXIF,"DateTimeOriginal",tag))
         {
             value = tag.toString(FIMD_EXIF_EXIF);
-            image->time_stamp = new QString(value);
+            image.time_stamp = new QString(value);
         }
 
         /* Make Thumbnail from original image and store it to execution folder using PNG Format */

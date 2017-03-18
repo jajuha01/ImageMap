@@ -136,8 +136,8 @@ void ImageData::AddThumbnail(QImage image)
 void ImageData::AddAlttitude(const char *value)
 {
 
-    /* Example format from 1056,3m high "10563000/10000"
-     * or "4867000/1000" -> 4867.000m */
+    /* Example format from 1056,3m high "10563000/10000" or "10000/10563000"
+     * "4867000/1000" or "1000/4867000" -> 4867.000m */
     int index = 0;  // Calculate decimal values
     int index2 = 0; // Calculate divider size
     int place_of_dot;
@@ -148,8 +148,58 @@ void ImageData::AddAlttitude(const char *value)
     {
        index2++;
     }
+#if 0 // Todo how to detect and handle reverse formats
+    /* Check is the format in "10000/10563000" format */
+    if (index > 2 && *value == '1')
+    {
+        i++;
+        while (value[i] == '0')
+        {
+            i++;
+        }
+        if (value[i] == '/')
+        {
+            reverseFormat = true;
+        }
+    }
+    /* Check format and made new string in default format ("10563000/10000") */
+    if (reverseFormat)
+    {
+        /* create string in reverse format */
+        tmp_data = strdup(value);
+        i = 1;
+        // copy real values
+        while (i < index2)
+        {
+            tmp_data[i-1] = value[index+i];
+            i++;
+        }
+        tmp_data[i-1] = '/';
+        // copy decimal place values
+        i = 0;
+        while (value[i] != '/')
+        {
+            tmp_data[index2+i] = value[i];
+            i++;
+        }
+        // ReCalculate index values
+        index=0;
+        index2=0;
+        while (tmp_data[index] != '/')
+            index++;
+        while (tmp_data[(index+index2)] != '\0')
+        {
+           index2++;
+        }
+        value = tmp_data;
+
+    }
+    else
+#endif
+    {
+        tmp_data = strdup(value);
+    }
     /* Create new string in decimal format */
-    tmp_data = strdup(value);
     if (index > (index2-2))
     {
         place_of_dot = (index-(index2-2));

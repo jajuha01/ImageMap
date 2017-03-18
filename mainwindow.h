@@ -30,7 +30,7 @@ private:
     int total_files_found;
     int files_done;
     QThread* webFrameThread;
-    void AddNewMarker(ImageData* data);
+    void AddNewMarker(const ImageData& data);
     void ParseGPSDataFromImage(QString file);
     FileParser* parser;
     Ui::MainWindow *ui;

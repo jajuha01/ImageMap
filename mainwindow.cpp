@@ -49,22 +49,22 @@ void MainWindow::RemoveMarkers()
     ui->webView->page()->mainFrame()->evaluateJavaScript(code.join("\n"));
 }
 
-void MainWindow::AddNewMarker(ImageData* data)
+void MainWindow::AddNewMarker(const ImageData& data)
 {
     QStringList code;
     QString OneLine = "";
 
-    if (data->longitude && data->latitude)
+    if (data.longitude && data.latitude)
     {
         code << "{";
-        OneLine = "var description = '" + *(data->file_name);
-        if (data->alttitude)
-            OneLine += " Height: " + *(data->alttitude);
-        if (data->time_stamp)
-            OneLine += " Timestamp:" + *(data->time_stamp);
+        OneLine = "var description = '" + *(data.file_name);
+        if (data.alttitude)
+            OneLine += " Height: " + *(data.alttitude);
+        if (data.time_stamp)
+            OneLine += " Timestamp:" + *(data.time_stamp);
         OneLine += "';";
         code << OneLine;
-        OneLine = "var myLatlng = new google.maps.LatLng(" + *(data->latitude) + ", " + *(data->longitude) + ");";
+        OneLine = "var myLatlng = new google.maps.LatLng(" + *(data.latitude) + ", " + *(data.longitude) + ");";
         code << OneLine;
         code << "addMarker(myLatlng, description);";
         code << "}";
@@ -74,7 +74,7 @@ void MainWindow::AddNewMarker(ImageData* data)
 #ifdef QT_DEBUG
     else
     {
-        qDebug() << *(data->file_name) << " Don't have location info!!";
+        qDebug() << *(data.file_name) << " Don't have location info!!";
     }
 #endif
 }
@@ -116,7 +116,7 @@ void MainWindow::ParserStarted(int total_files)
 
 void MainWindow::FileInfoComplete(int value)
 {
-    ImageData* image = parser->GetImageData(value);
+    const ImageData& image = parser->GetImageData(value);
     AddNewMarker(image);
     /* Update progress */
     files_done +=1;
